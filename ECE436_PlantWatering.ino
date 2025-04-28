@@ -11,7 +11,10 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Serial initiated");
   setupRelay(19, 20);
-
+  setBubblerOnTime(5*60);       // input in seconds, this is 5   min
+  setBubblerOffTime(2.5*60*60); // input in seconds, this is 2.5 hrs
+  setWatererOnTime(15*60);      // input in seconds, this is 15  min
+  setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
   delay(2000);
 }
 
@@ -19,6 +22,7 @@ void loop() {
   // If button is pressed
   if (digitalRead(BTN_STOP_ALARM) == LOW) {
     // endRelayTimer();
+    delay(5); // debounce
     setBubblerOnTime(getBubblerOnTime() + 3);
     Serial.println(getBubblerOnTime());
   }
