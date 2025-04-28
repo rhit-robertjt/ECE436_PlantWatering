@@ -18,7 +18,7 @@ void setup() {
   setWatererOnTime(15*60);      // input in seconds, this is 15  min
   setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
 
-  OLED_setup();
+  // OLED_setup();
 
   delay(2000);
 }
@@ -32,4 +32,6 @@ void loop() {
     Serial.println(getBubblerOnTime());
   }
   delay(50);
+
+  // showText(0, 0, String(getBubblerOnTime()));
 }
