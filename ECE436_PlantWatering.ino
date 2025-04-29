@@ -5,6 +5,7 @@
 #include "Pump_Relay.h"
 #include "OLED_Debug.h"
 #include "DHT_Humid.h"
+#include "PlantSensors.h"
 
 // Stop button is attached to PIN 0 (IO0)
 #define BTN_STOP_ALARM 0
@@ -23,6 +24,7 @@ void setup() {
 
   OLED_setup();
   DHT_setup(6);
+  setupSensorPins(7,5);
 
   delay(2000);
 }
@@ -36,6 +38,12 @@ void loop() {
     // Serial.println(getBubblerOnTime());
     Serial.println("Temp: " + String(returnTemp()));
     Serial.println("Humid: " + String(returnHumid()));
+    int soilValue = getSoilMoisture();
+    int waterValue = getWaterLevel();
+    Serial.print("Soil Moisture Value: ");
+    Serial.println(soilValue);
+    Serial.print("Water level Value: ");
+    Serial.println(waterValue);
   }
   delay(1000);
   count = count + 1;
