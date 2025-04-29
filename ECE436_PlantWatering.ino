@@ -8,17 +8,19 @@
 // Stop button is attached to PIN 0 (IO0)
 #define BTN_STOP_ALARM 0
 
+int count = 0;
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Serial initiated");
 
-  setupRelay(21, 26);
-  setBubblerOnTime(5*60);       // input in seconds, this is 5   min
-  setBubblerOffTime(2.5*60*60); // input in seconds, this is 2.5 hrs
-  setWatererOnTime(15*60);      // input in seconds, this is 15  min
-  setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
+  setupRelay(19, 20);
+  // setBubblerOnTime(5*60);       // input in seconds, this is 5   min
+  // setBubblerOffTime(2.5*60*60); // input in seconds, this is 2.5 hrs
+  // setWatererOnTime(15*60);      // input in seconds, this is 15  min
+  // setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
 
-  // OLED_setup();
+  OLED_setup();
 
   delay(2000);
 }
@@ -28,10 +30,10 @@ void loop() {
   if (digitalRead(BTN_STOP_ALARM) == LOW) {
     // endRelayTimer();
     delay(5); // debounce
-    setBubblerOnTime(getBubblerOnTime() + 3);
-    Serial.println(getBubblerOnTime());
+    // setBubblerOnTime(getBubblerOnTime() + 3);
+    // Serial.println(getBubblerOnTime());
   }
-  delay(50);
-
-  // showText(0, 0, String(getBubblerOnTime()));
+  delay(100);
+  count = count + 1;
+  showText(0, 0, String(getBubblerTimerTrigger())); // count
 }

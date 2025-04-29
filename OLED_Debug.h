@@ -3,6 +3,6 @@
 #define OLED_DEBUG
 
 extern void showText(int, int, String);
-extern void OELD_setup();
+extern void OLED_setup();
 
 #endif

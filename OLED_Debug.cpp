@@ -16,14 +16,14 @@ void VextOFF(void) {
 }
 
 void showText(int x, int y, String input) {
-  VextON();
+  // VextON();
   display.clear();
   display.drawString(0, 0, input);
   display.display();
-  VextOFF();
+  // VextOFF();
 }
 
-void OELD_setup() {
+void OLED_setup() {
   Serial.println();
   VextON();
   // Initialising the UI will init the display too.
@@ -31,7 +31,7 @@ void OELD_setup() {
 
   display.setFont(ArialMT_Plain_10);
   display.setTextAlignment(TEXT_ALIGN_LEFT);
-  VextOFF();
+  // VextOFF();
   
   delay(2000);
 }

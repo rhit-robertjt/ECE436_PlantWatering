@@ -21,8 +21,8 @@ void ARDUINO_ISR_ATTR onTimer() {
   portENTER_CRITICAL_ISR(&timerMux);
   bubblerTimerTrigger = bubblerTimerTrigger + 1;
   watererTimerTrigger = watererTimerTrigger + 1;
-  Serial.println(bubblerTimerTrigger);
-  Serial.println(watererTimerTrigger);
+  // Serial.println(bubblerTimerTrigger);
+  // Serial.println(watererTimerTrigger);
   portEXIT_CRITICAL_ISR(&timerMux);
   // Give a semaphore that we can check in the loop
   xSemaphoreGiveFromISR(timerSemaphore, NULL);
