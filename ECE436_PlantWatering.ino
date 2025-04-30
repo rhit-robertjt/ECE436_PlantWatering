@@ -4,7 +4,7 @@
 
 #include "Pump_Relay.h"
 #include "OLED_Debug.h"
-#include "DHT_Humid.h"
+// #include "DHT_Humid.h"
 #include "PlantSensors.h"
 
 // Stop button is attached to PIN 0 (IO0)
