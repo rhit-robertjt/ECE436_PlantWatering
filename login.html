@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plant Monitor Login</title>
+   <style>
+        :root {
+            --main-bg-color: #2e7d32;
+            --second-bg-color: lightgrey;
+            --main-color: white;
+            --second-color: blue;
+            --link-color: #0BEAA0;
+        }
+        body {
+            background-color: var(--second-bg-color);
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            min-height: 100vh;
+            color: var(--main-color);
+        }
+        .headNav {
+            background-color: var(--main-bg-color);
+            overflow: hidden;
+            min-height: 50px;
+        }
+        .headNav a {
+            float: left;
+            color: var(--main-color);
+            text-align: center;
+            padding: 17px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        .headNav a:hover, .footNav a:hover { 
+            background-color: var(--main-color);
+        }
+        .headNav a.active {
+            color: var(--main-bg-color);
+            background-color: var(--main-color);
+        }
+        a:visited, a:hover {
+            color: var(--second-color);
+        }
+        a {
+            color: var(--link-color);
+        }
+        .right-side {
+            float: right;
+        }
+        /* Start main content */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        main {
+            background-image: url('https://watv.org/wp-content/uploads/2021/01/dense-forest.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* min-height: 100vh; */
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-container h2 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #388e3c;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #a5d6a7;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #43a047;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .login-button:hover {
+            background-color: #2e7d32;
+        }
+        .footer-text {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .footer-text a {
+            color: #2e7d32;
+            text-decoration: none;
+        }
+        /* Social buttons */
+        .social-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .google {
+            background-color: #ffffff;
+            color: #444;
+            border: 1px solid #ccc;
+        }
+        .google:hover {
+            background-color: #f1f1f1;
+        }
+   </style>
+</head>
+<body>
+    <header class="headNav">
+        <a href="webpage.html">Main Page</a>
+        <a href="control.html">Control</a>
+        <div class="right-side">
+            <a class="active" href="login.html">Login</a>
+        </div>
+    </header>
+    <main>
+  <div class="login-container">
+    <h2>Login to Plant Monitor 🌿</h2>
+    <form>
+      <div class="form-group">
+        <label for="username">Username or Email</label>
+        <input type="text" id="username" name="username" required/>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required/>
+      </div>
+      <button class="login-button" type="submit">Login</button>
+    </form>
+
+    <div class="social-login">
+        <button class="social-button google">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo" />
+          Login with Google (No)
+        </button>
+      </div>
+
+    <div class="footer-text" hidden>
+      Don't have an account? <a href="#">Sign up</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>
