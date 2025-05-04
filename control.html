@@ -3,8 +3,6 @@
     <head>
         <title>Plant Monitor Control Panel</title>
         <meta charset="utf-8" name="viewport" content="width=device-width">
-        <!-- <link rel="icon" type="image/x-icon" href="favicon.ico"> -->
-        <!-- <script type="text/javascript" src="main.js"></script> -->
         <meta name="description" content="A website that controls an automated plant watering project">
         <style>
             :root {
@@ -123,84 +121,77 @@
             window.addEventListener("DOMContentLoaded", () => {
                 let buttons = document.querySelectorAll("button");
                 buttons[0].addEventListener("click", () => {
-                    // console.log("Manual Watering");
                     if (buttons[0].textContent == "Disable Manual Watering") {
-                        buttons[0].textContent = "Enable Manual Watering"
+                        buttons[0].textContent = "Enable Manual Watering";
                         fetch("/manual", {
                             method: "POST",
                             'Content-Type': 'text/plain',
                             body: "on",
-                        })
+                        });
                     } else {
-                        buttons[0].textContent = "Disable Manual Watering"
+                        buttons[0].textContent = "Disable Manual Watering";
                         fetch("/manual", {
                             method: "POST",
                             'Content-Type': 'text/plain',
                             body: "off",
-                        })
+                        });
                     }
-                })
+                });
                 buttons[1].addEventListener("click", () => {
-                    // console.log("Circulation Pump");
                     if (buttons[1].textContent == "Disable Circulation Pump") {
-                        buttons[1].textContent = "Enable Circulation Pump"
+                        buttons[1].textContent = "Enable Circulation Pump";
                         fetch("/circ", {
                             method: "POST",
                             'Content-Type': 'text/plain',
                             body: "on",
-                        })
+                        });
                     } else {
-                        buttons[1].textContent = "Disable Circulation Pump"
+                        buttons[1].textContent = "Disable Circulation Pump";
                         fetch("/circ", {
                             method: "POST",
                             'Content-Type': 'text/plain',
                             body: "off",
-                        })
+                        });
                     }
-                })
+                });
                 buttons[2].addEventListener("click", () => {
-                    console.log("Watering Timing");
                     let onTime = prompt("How long (in minutes) should the plant be watered for?");
                     if(onTime == null || isNaN(onTime)) {
-                        return
+                        return;
                     }
                     let offTime = prompt("How long (in minutes) should the should the system wait in between waterings?");
                     if(offTime == null || isNaN(offTime)) {
-                        return
+                        return;
                     }
-                    console.log(`New Watering Timing: ${onTime}/${offTime}`);
                     fetch("/setWaterings", {
                             method: "POST",
                             'Content-Type': 'text/plain',
                             body: `${onTime} ${offTime}`,
-                        })
-                })
+                        });
+                });
                 buttons[3].addEventListener("click", () => {
-                    console.log("Reset to Defaults");
                     fetch("/reset", {
                             method: "POST",
                             'Content-Type': 'text/plain',
                             body: `Welcome to the Matrix...`,
-                        })
-                })
+                        });
+                });
                 let dropdowns = document.querySelectorAll("select");
                 dropdowns[0].addEventListener("change", () => {
-                    console.log(`Plant Type change to ${dropdowns[0].value}`);
                     fetch("/plant_type", {
                             method: "POST",
                             'Content-Type': 'text/plain',
                             body: dropdowns[0].value,
-                        })
-                })
+                        });
+                });
                 dropdowns[1].addEventListener("change", () => {
-                    console.log(`Mode Preset change to ${dropdowns[1].value}`);
                     fetch("/modes", {
                             method: "POST",
                             'Content-Type': 'text/plain',
                             body: dropdowns[1].value,
-                        })
-                })
-            })
+                        });
+                });
+            });
         </script>
     </head>
 <body>

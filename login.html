@@ -159,23 +159,20 @@
             return false;
         }
         const resp_text = await response.text();
-        // console.log(resp_text)
         return resp_text == "true" ? true : false;
     }
     window.addEventListener("DOMContentLoaded", async function() {
         // ask Arduino if we already have a uid/pass
         let hasID = await hasCredentials();
-        // console.log(hasID)
         if (!hasID) {
-            // make them provide uid/pass
             let uid = "";
             do {
                 uid = prompt("What do you wish the username to be?");
-            } while (uid == "" || uid == null)
+            } while (uid == "" || uid == null);
             let pass = "";
             do {
                 pass = prompt("What do you wish the password to be?");
-            } while (pass == "" || pass == null)
+            } while (pass == "" || pass == null);
             console.log(`uid: ${uid} and pass: ${pass}`);
             // do the fetch(post) here to /setUID and /setPass
             // other code (Arduino side) will handle the check with login
@@ -184,9 +181,14 @@
                 method: "POST",
                 'Content-Type': 'text/plain',
                 body: `${uid} ${pass}`,
-            })
+            });
         }
-    })
+        let logout = document.querySelector("#logout");
+        logout.addEventListener("click", async () => {
+            console.log("deauth");
+            let response = await fetch("/logout");
+        });
+    });
    </script>
 </head>
 <body>
@@ -218,6 +220,7 @@
           Login with Google (No)
         </button>
       </div>
+    <button id="logout" style="margin-top: 20px;" class="login-button">Logout</button>
 
     <div class="footer-text" hidden>
       Don't have an account? <a href="#">Sign up</a>

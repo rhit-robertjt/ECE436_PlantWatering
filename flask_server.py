@@ -18,6 +18,14 @@ app = Flask(__name__,                       # ie "http_server_starter"
 username = None
 password = None
 
+@app.route("/variables")
+def get_vars():
+    return ", ".join(["0", "1", "2", "3"])
+
+@app.route("/logout")
+def logout():
+    return "true"
+
 @app.route('/hasCredentials', methods=['GET'])
 def check_pass_availability():
     print("true" if (username != None and password != None) else "false")

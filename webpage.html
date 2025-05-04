@@ -94,6 +94,18 @@
                 margin-bottom: 30px;
             }
         </style>
+        <script>
+            window.addEventListener("DOMContentLoaded", async () => {
+                let response = await fetch("/variables");
+                let text = await response.text();
+                text = text.split(", ");
+                console.log(text);
+                let paragraphs = document.querySelectorAll("main div p");
+                for(let i = 0; i < 4; i++) {
+                    paragraphs[i].textContent = paragraphs[i].textContent.replace("%s", text[i]);
+                }
+            });
+        </script>
     </head>
     <body>
         <header class="headNav">
@@ -109,8 +121,8 @@
                 <h2>Here is the current state of the machine: </h2>
                 <p>Time last watered: %s</p>
                 <p>Next watering time: %s</p>
-                <p>Humidity: %d%</p>
-                <p>Soil Moisture: %d%</p>
+                <p>Humidity: %s%</p>
+                <p>Soil Moisture: %s%</p>
             </div>
         </main>
     </body>
