@@ -82,22 +82,27 @@ void handleLogin() {
 
 void handleModes() {
   Serial.println("Have Modes");
+  server.send(200, "text/plain", "true");
 }
 
 void handlePlantType() {
   Serial.println("Have Plant Type");
+  server.send(200, "text/plain", "true");
 }
 
 void handleReset() {
   Serial.println("Have Reset");
+  server.send(200, "text/plain", "true");
 }
 
 void handleSetWaterings() {
   Serial.println("Have Watering set");
+  server.send(200, "text/plain", "true");
 }
 
 void handleManual() {
   Serial.println("Have Manual");
+  server.send(200, "text/plain", "true");
 }
 
 void handleSetCreds() {
@@ -110,16 +115,23 @@ void handleSetCreds() {
   Serial.println(username);
   Serial.println(password);
   // respond with something here
+  server.send(200, "text/plain", "true");
 }
 
 void handleCredentials() {
   Serial.println("Check Creds");
-  server.send(200, "text/plain", (username == "" && password == "") ? "true" : "false");
+  server.send(200, "text/plain", (username == "" || password == "") ? "false" : "true");
 }
 
 void handleVariables() {
   Serial.println("Have Check Creds");
-  server.send(200, "text/plain", "1, 2, 3, 4");
+  char logOutput[35];
+  snprintf(logOutput, 35, "%d seconds, %d seconds, %d, %d", 
+    getBubblerTimerTrigger(), 
+    (getBubblerRelayState()) ? getBubblerOffTime() - getBubblerTimerTrigger() : 0, 
+    returnHumid(), 
+    getSoilMoisture());
+  server.send(200, "text/plain", logOutput);
 }
 
 // Control page can be accessed only if authentication is ok
