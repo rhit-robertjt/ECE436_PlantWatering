@@ -18,6 +18,11 @@ String password = "";
 
 WebServer server(80);
 
+bool manualMode = 0;
+int prevWateringTime = 0;
+bool manualCircMode = 0;
+int prevCircTime = 0;
+
 // Stop button is attached to PIN 0 (IO0)
 #define BTN_STOP_ALARM 0
 int count = 0;
@@ -82,26 +87,66 @@ void handleLogin() {
 
 void handleModes() {
   Serial.println("Have Modes");
+  String payload = server.arg("plain");
+  Serial.println(payload);
   server.send(200, "text/plain", "true");
 }
 
 void handlePlantType() {
   Serial.println("Have Plant Type");
+  String payload = server.arg("plain");
+  Serial.println(payload);
   server.send(200, "text/plain", "true");
 }
 
 void handleReset() {
   Serial.println("Have Reset");
+  String payload = server.arg("plain");
+  Serial.println(payload);
+  setBubblerOnTime(20);         // input in seconds, this is 20  sec
+  setBubblerOffTime(3*60*60);   // input in seconds, this is 3   hrs
+  setWatererOnTime(20);         // input in seconds, this is 20  sec
+  setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
   server.send(200, "text/plain", "true");
 }
 
 void handleSetWaterings() {
   Serial.println("Have Watering set");
+  String payload = server.arg("plain");
+  Serial.println(payload);
+  int space = payload.indexOf(" ");
+  int time1 = payload.substring(0, space).toInt();
+  int time2 = payload.substring(space + 1).toInt();
+  setWatererOnTime(time1);
+  setWatererOffTime(time2);
+  server.send(200, "text/plain", "true");
+}
+
+void handleCirculation() {
+  Serial.println("Have Circ");
+  String payload = server.arg("plain");
+  Serial.println(payload);
+  if (payload == "off") {
+    prevCircTime = getBubblerOnTime();
+    setBubblerOnTime(0);
+  } else {
+    setBubblerOnTime(prevCircTime);
+  }
+  manualCircMode = !manualCircMode;
   server.send(200, "text/plain", "true");
 }
 
 void handleManual() {
   Serial.println("Have Manual");
+  String payload = server.arg("plain");
+  Serial.println(payload);
+  if (payload == "off") {
+    prevWateringTime = getWatererOnTime();
+    setWatererOnTime(0);
+  } else {
+    setWatererOnTime(prevWateringTime);
+  }
+  manualMode = !manualMode;
   server.send(200, "text/plain", "true");
 }
 
@@ -174,7 +219,6 @@ void handleNotFound() {
   server.send(404, "text/plain", message);
 }
 
-
 void setup(void) {
   int counter = 0;
   Serial.begin(115200);
@@ -182,10 +226,12 @@ void setup(void) {
   WiFi.begin(ssid, pass);
   Serial.println("");
 
+  pinMode(BTN_STOP_ALARM, INPUT);
+
   setupRelay(19, 20);
-  // setBubblerOnTime(5*60);       // input in seconds, this is 5   min
-  // setBubblerOffTime(2.5*60*60); // input in seconds, this is 2.5 hrs
-  // setWatererOnTime(15*60);      // input in seconds, this is 15  min
+  // setBubblerOnTime(20);         // input in seconds, this is 20  sec
+  // setBubblerOffTime(3*60*60);   // input in seconds, this is 3   hrs
+  // setWatererOnTime(20);         // input in seconds, this is 20  sec
   // setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
   OLED_setup();
   DHT_setup(6);
@@ -217,6 +263,7 @@ void setup(void) {
   server.on("/reset",           handleReset);
   server.on("/setWaterings",    handleSetWaterings);
   server.on("/manual",          handleManual);
+  server.on("/circ",            handleCirculation);
   server.on("/setUIDPASS",      handleSetCreds);
   server.on("/hasCredentials",  handleCredentials);
   server.on("/variables",       handleVariables);
