@@ -66,8 +66,10 @@ void handleLogin() {
     String cookie = server.header("Cookie");
     Serial.println(cookie);
   }
-  if (server.hasArg("USERNAME") && server.hasArg("PASSWORD")) {
-    if (server.arg("USERNAME") == username && server.arg("PASSWORD") == password) {
+  if (server.hasArg("username") && server.hasArg("password")) {
+    // Serial.println(server.arg("username"));
+    // Serial.println(server.arg("password"));
+    if (server.arg("username") == username && server.arg("password") == password) {
       server.sendHeader("Location", "/control.html");
       server.sendHeader("Cache-Control", "no-cache");
       server.sendHeader("Set-Cookie", "ESPSESSIONID=1");
@@ -81,7 +83,7 @@ void handleLogin() {
   // redirect to login page
   server.sendHeader("Location", "/login.html");
   server.sendHeader("Cache-Control", "no-cache");
-  server.sendHeader("Set-Cookie", "ESPSESSIONID=1");
+  server.sendHeader("Set-Cookie", "ESPSESSIONID=0");
   server.send(301);
 }
 
@@ -107,7 +109,7 @@ void handleReset() {
   setBubblerOffTime(3*60*60);   // input in seconds, this is 3   hrs
   setWatererOnTime(20);         // input in seconds, this is 20  sec
   setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
-  server.send(200, "text/plain", "true");
+  server.send(200, "application/json", "{\"status\": true}");
 }
 
 void handleSetWaterings() {
@@ -119,6 +121,10 @@ void handleSetWaterings() {
   int time2 = payload.substring(space + 1).toInt();
   setWatererOnTime(time1);
   setWatererOffTime(time2);
+
+  Serial.println(getWatererOnTime());
+  Serial.println(getWatererOffTime());
+
   server.send(200, "text/plain", "true");
 }
 
@@ -126,13 +132,18 @@ void handleCirculation() {
   Serial.println("Have Circ");
   String payload = server.arg("plain");
   Serial.println(payload);
-  if (payload == "off") {
+  if (payload == "on") {
     prevCircTime = getBubblerOnTime();
     setBubblerOnTime(0);
+    manualCircMode = true;
   } else {
     setBubblerOnTime(prevCircTime);
+    manualCircMode = false;
   }
-  manualCircMode = !manualCircMode;
+
+  Serial.println(getBubblerOnTime());
+  Serial.println(getBubblerOffTime());
+
   server.send(200, "text/plain", "true");
 }
 
@@ -140,13 +151,20 @@ void handleManual() {
   Serial.println("Have Manual");
   String payload = server.arg("plain");
   Serial.println(payload);
-  if (payload == "off") {
+  if (payload == "on") {
     prevWateringTime = getWatererOnTime();
     setWatererOnTime(0);
+    manualMode = true;
   } else {
-    setWatererOnTime(prevWateringTime);
+    if (prevWateringTime > 0) {
+      setWatererOnTime(prevWateringTime);
+    }
+    manualMode = false;
   }
-  manualMode = !manualMode;
+
+  Serial.println(getWatererOnTime());
+  Serial.println(getWatererOffTime());
+
   server.send(200, "text/plain", "true");
 }
 
@@ -285,21 +303,30 @@ void setup(void) {
 void loop(void) {
   server.handleClient();
   delay(2);  //allow the cpu to switch to other tasks
-    // If button is pressed
+  // If button is pressed
   if (digitalRead(BTN_STOP_ALARM) == LOW) {
-    // endRelayTimer();
+    // // endRelayTimer();
     delay(5); // debounce
-    // setBubblerOnTime(getBubblerOnTime() + 3);
-    // Serial.println(getBubblerOnTime());
-    Serial.println("Temp: " + String(returnTemp()));
-    Serial.println("Humid: " + String(returnHumid()));
-    int soilValue = getSoilMoisture();
-    int waterValue = getWaterLevel();
-    Serial.print("Soil Moisture Value: ");
-    Serial.println(soilValue);
-    Serial.print("Water level Value: ");
-    Serial.println(waterValue);
-    showText(0, 0, String(getBubblerTimerTrigger())); // count
-    readDHT();
-  }  
+    // // setBubblerOnTime(getBubblerOnTime() + 3);
+    Serial.println(getBubblerOnTime());
+    Serial.println(getBubblerOffTime());
+    Serial.println(getWatererOnTime());
+    Serial.println(getWatererOffTime());
+    // Serial.println("Temp: " + String(returnTemp()));
+    // Serial.println("Humid: " + String(returnHumid()));
+    // int soilValue = getSoilMoisture();
+    // int waterValue = getWaterLevel();
+    // Serial.print("Soil Moisture Value: ");
+    // Serial.println(soilValue);
+    // Serial.print("Water level Value: ");
+    // Serial.println(waterValue);
+    // showText(0, 0, String(getBubblerTimerTrigger())); // count
+    // readDHT();
+    Serial.println(manualMode);
+    Serial.println(prevWateringTime);
+    Serial.println(manualCircMode);
+    Serial.println(prevCircTime);
+    while (digitalRead(BTN_STOP_ALARM) == LOW);
+  }
+  showText(0, 0, String(getWatererTimerTrigger())); // count
 }
