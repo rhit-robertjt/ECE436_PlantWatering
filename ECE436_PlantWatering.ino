@@ -5,7 +5,7 @@
 #include "control.h"
 #include "login.h"
 #include "webpage.h"
-
+#include <ArduinoJson.h>
 #include "Pump_Relay.h"
 #include "OLED_Debug.h"
 #include "PlantSensors.h"
@@ -67,8 +67,6 @@ void handleLogin() {
     Serial.println(cookie);
   }
   if (server.hasArg("username") && server.hasArg("password")) {
-    // Serial.println(server.arg("username"));
-    // Serial.println(server.arg("password"));
     if (server.arg("username") == username && server.arg("password") == password) {
       server.sendHeader("Location", "/control.html");
       server.sendHeader("Cache-Control", "no-cache");
@@ -91,7 +89,12 @@ void handleModes() {
   Serial.println("Have Modes");
   String payload = server.arg("plain");
   Serial.println(payload);
-  server.send(200, "text/plain", "true");
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+        (server.header("Accept").indexOf("*/*") >= 0)) {
+    server.send(200, "text/plain", "true");
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    server.send(200, "application/json", "{\"status\": 200}");
+  }
 }
 
 void handlePlantType() {
@@ -107,8 +110,13 @@ void handlePlantType() {
   else{
     setMinSoilMoisture(20);
   }
-  server.send(200, "text/plain", "true");
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+        (server.header("Accept").indexOf("*/*") >= 0)) {
+    server.send(200, "text/plain", "true");
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    server.send(200, "application/json", "{\"status\": 200}");
   }
+}
 
 void handleReset() {
   Serial.println("Have Reset");
@@ -118,7 +126,12 @@ void handleReset() {
   setBubblerOffTime(3*60*60);   // input in seconds, this is 3   hrs
   setWatererOnTime(20);         // input in seconds, this is 20  sec
   setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
-  server.send(200, "application/json", "{\"status\": true}");
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+        (server.header("Accept").indexOf("*/*") >= 0)) {
+    server.send(200, "text/plain", "true");
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    server.send(200, "application/json", "{\"status\": 200}");
+  }
 }
 
 void handleSetWaterings() {
@@ -130,11 +143,12 @@ void handleSetWaterings() {
   int time2 = payload.substring(space + 1).toInt();
   setWatererOnTime(time1);
   setWatererOffTime(time2);
-
-  Serial.println(getWatererOnTime());
-  Serial.println(getWatererOffTime());
-
-  server.send(200, "text/plain", "true");
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+        (server.header("Accept").indexOf("*/*") >= 0)) {
+    server.send(200, "text/plain", "true");
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    server.send(200, "application/json", "{\"status\": 200}");
+  }
 }
 
 void handleCirculation() {
@@ -149,11 +163,12 @@ void handleCirculation() {
     setBubblerOnTime(prevCircTime);
     manualCircMode = false;
   }
-
-  Serial.println(getBubblerOnTime());
-  Serial.println(getBubblerOffTime());
-
-  server.send(200, "text/plain", "true");
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+        (server.header("Accept").indexOf("*/*") >= 0)) {
+    server.send(200, "text/plain", "true");
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    server.send(200, "application/json", "{\"status\": 200}");
+  }
 }
 
 void handleManual() {
@@ -170,11 +185,12 @@ void handleManual() {
     }
     manualMode = false;
   }
-
-  Serial.println(getWatererOnTime());
-  Serial.println(getWatererOffTime());
-
-  server.send(200, "text/plain", "true");
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+        (server.header("Accept").indexOf("*/*") >= 0)) {
+    server.send(200, "text/plain", "true");
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    server.send(200, "application/json", "{\"status\": 200}");
+  }
 }
 
 void handleSetCreds() {
@@ -184,26 +200,48 @@ void handleSetCreds() {
   int space = payload.indexOf(" ");
   username = payload.substring(0, space);
   password = payload.substring(space + 1);
-  Serial.println(username);
-  Serial.println(password);
-  // respond with something here
-  server.send(200, "text/plain", "true");
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+        (server.header("Accept").indexOf("*/*") >= 0)) {
+    server.send(200, "text/plain", "true");
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    server.send(200, "application/json", "{\"status\": 200}");
+  }
 }
 
 void handleCredentials() {
   Serial.println("Check Creds");
-  server.send(200, "text/plain", (username == "" || password == "") ? "false" : "true");
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+        (server.header("Accept").indexOf("*/*") >= 0)) {
+    server.send(200, "text/plain", (username == "" || password == "") ? "false" : "true");
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    if (username == "" || password == "") {
+      server.send(200, "application/json", "{\"hasCredentials\": \"false\"}");
+    } else {
+      server.send(200, "application/json", "{\"hasCredentials\": \"true\"}");
+    }
+  }
 }
 
 void handleVariables() {
   Serial.println("Have Check Creds");
-  char logOutput[35];
-  snprintf(logOutput, 35, "%d seconds, %d seconds, %d, %d", 
-    getBubblerTimerTrigger(), 
-    (getBubblerRelayState()) ? getBubblerOffTime() - getBubblerTimerTrigger() : 0, 
-    returnHumid(), 
-    getSoilMoisture());
-  server.send(200, "text/plain", logOutput);
+  if ((server.header("Accept").indexOf("html") >= 0) ||
+      (server.header("Accept").indexOf("*/*") >= 0)) {
+    char logOutput[40];
+    snprintf(logOutput, 40, "%d seconds, %d seconds, %.2f, %d", 
+      getBubblerTimerTrigger(), 
+      (getBubblerRelayState()) ? getBubblerOffTime() - getBubblerTimerTrigger() : 0, 
+      returnHumid(), 
+      getSoilMoisture());
+    server.send(200, "text/plain", logOutput);
+  } else if (server.header("Accept").indexOf("json") >= 0) {
+    char logOutput[100];
+    snprintf(logOutput, 100, "{\"LastWatered\": %d, \"NextWater\": %d, \"Humidity\": %.2f, \"SoilMoisture\": %d}", 
+      getBubblerTimerTrigger(), 
+      (getBubblerRelayState()) ? getBubblerOffTime() - getBubblerTimerTrigger() : 0, 
+      returnHumid(), 
+      getSoilMoisture());
+    server.send(200, "application/json", logOutput);
+  }
 }
 
 // Control page can be accessed only if authentication is ok
@@ -226,7 +264,6 @@ void handleServeLogin() {
 
 // Main Page
 void handleRoot() {
-  Serial.println("Enter handleRoot");
   server.send(200, "text/html", webpage);
 }
 
@@ -300,7 +337,7 @@ void setup(void) {
 
   server.onNotFound(handleNotFound);
   //here the list of headers to be recorded
-  const char *headerkeys[] = {"User-Agent", "Cookie"};
+  const char *headerkeys[] = {"User-Agent", "Cookie", "Accept", "Accept-Encoding"};
   size_t headerkeyssize = sizeof(headerkeys) / sizeof(char *);
   //ask server to track these headers
   server.collectHeaders(headerkeys, headerkeyssize);
@@ -314,9 +351,9 @@ void loop(void) {
   delay(2);  //allow the cpu to switch to other tasks
   // If button is pressed
   if (digitalRead(BTN_STOP_ALARM) == LOW) {
-    // // endRelayTimer();
+    // endRelayTimer();
     delay(5); // debounce
-    // // setBubblerOnTime(getBubblerOnTime() + 3);
+    // setBubblerOnTime(getBubblerOnTime() + 3);
     Serial.println(getBubblerOnTime());
     Serial.println(getBubblerOffTime());
     Serial.println(getWatererOnTime());
