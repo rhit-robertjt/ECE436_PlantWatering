@@ -1,6 +1,7 @@
 
 #include <stdbool.h>
 #include <Arduino.h>
+#include "PlantSensors.h"
 #include "Pump_Relay.h"
 
 int bubblerRelayPin = 19;
@@ -11,6 +12,7 @@ int bubblerTimerTrigger = 0;
 int watererTimerTrigger = 0;
 int bubblerRelayTimes[2] = { 5, 2 };
 int watererRelayTimes[2] = { 6, 8 };
+int minSoilMoisture = 20;
 
 hw_timer_t *timer = NULL;
 volatile SemaphoreHandle_t timerSemaphore;
@@ -33,7 +35,12 @@ void ARDUINO_ISR_ATTR onTimer() {
     bubblerTimerTrigger = 0;
   }
   if (watererTimerTrigger >= watererRelayTimes[watererRelayState]) {
-    digitalWrite(watererRelayPin, watererRelayState);
+    if (getSoilMoisture() < minSoilMoisture){
+      digitalWrite(watererRelayPin, false);
+    }
+    else{
+      digitalWrite(watererRelayPin, watererRelayState);
+    }
     watererRelayState = !watererRelayState;
     watererTimerTrigger = 0;
   }
@@ -54,6 +61,8 @@ int getWatererRelayState() {return watererRelayState;}
 
 int getBubblerTimerTrigger() {return bubblerTimerTrigger;}
 int getWatererTimerTrigger() {return watererTimerTrigger;}
+
+void setMinSoilMoisture(int newSoilMoisture) {minSoilMoisture = newSoilMoisture;}
 
 void endRelayTimer() {
   if (timer) {

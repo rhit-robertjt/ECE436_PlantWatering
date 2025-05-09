@@ -98,8 +98,17 @@ void handlePlantType() {
   Serial.println("Have Plant Type");
   String payload = server.arg("plain");
   Serial.println(payload);
+  if (payload == "Tropic"){
+    setMinSoilMoisture(40);
+  }
+  else if (payload == "Arid"){
+    setMinSoilMoisture(20);
+  }
+  else{
+    setMinSoilMoisture(20);
+  }
   server.send(200, "text/plain", "true");
-}
+  }
 
 void handleReset() {
   Serial.println("Have Reset");

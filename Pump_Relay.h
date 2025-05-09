@@ -16,5 +16,6 @@ extern int  getBubblerTimerTrigger();
 extern int  getWatererTimerTrigger();
 extern void endRelayTimer();
 extern void setupRelay(int, int);
+extern void setMinSoilMoisture(int minSoilMoisture);
 
 #endif
