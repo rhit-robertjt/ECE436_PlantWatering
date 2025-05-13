@@ -46,7 +46,26 @@ int getSoilMoisture() {
   int soilValue = analogRead(soilPin);
   Serial.print("Soil Mositure Value: ");
   Serial.println(soilValue);
-  return soilValue;
+  if (soilValue < 800){
+    Serial.println("Soilvalue below 800");
+    return 0;
+  }
+  else if (soilValue < 2400){
+    Serial.println("Soilvalue below 2400");
+    double mathValues = 0.043*soilValue - 32.0;
+    return mathValues;
+  }
+  else{
+    double otherMathValues = 0.143*soilValue - 278.6;
+    Serial.println("you are above 2400");
+    if (otherMathValues > 100){
+      return 100;
+    }
+    else if (otherMathValues < 70){
+      return 70;
+    }
+    return otherMathValues; 
+  }
 }
 
 void setupSensorPins(int WaterlevelPin, int soilMoisPin){
