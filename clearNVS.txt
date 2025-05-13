@@ -1,0 +1,11 @@
+   #include <nvs_flash.h>
+
+   void setup() {
+     nvs_flash_erase(); // Erase the NVS partition
+     nvs_flash_init(); // Re-initialize the NVS partition
+     while(true); // Wait indefinitely
+   }
+
+   void loop() {
+     // This loop will not execute as the setup function will wait indefinitely.
+   }
