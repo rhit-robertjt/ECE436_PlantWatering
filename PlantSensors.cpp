@@ -14,6 +14,7 @@ double temperature;
 double humidity;
 int levelPin;
 int soilPin; 
+int LEDPin = 35;
 
 int getWaterLevel() {
   int waterValue = analogRead(levelPin);
@@ -21,17 +22,20 @@ int getWaterLevel() {
   Serial.println(waterValue);
   if (waterValue < 1000){
     Serial.println("you are below 1000");
+    digitalWrite(LEDPin, HIGH);
     return 0;
   }
   // Goes up to a max of 37% before going to next
   else if (waterValue < 1900){
     double mathValue = 0.04089*waterValue-39.8;
     Serial.println("you are above 1000");
+    digitalWrite(LEDPin, LOW);
     return mathValue;
   }
   else {
     double OtherMathValue = 0.834*waterValue - 1693;
     Serial.println("you are above 1900");
+    digitalWrite(LEDPin, LOW);
     if (OtherMathValue > 100){
       return 100;
     }
@@ -71,6 +75,7 @@ int getSoilMoisture() {
 void setupSensorPins(int WaterlevelPin, int soilMoisPin){
   levelPin = WaterlevelPin;
   soilPin = soilMoisPin;
+  pinMode(LEDPin, OUTPUT); 
 }
 
 
