@@ -9,6 +9,9 @@
 #include "Pump_Relay.h"
 #include "OLED_Debug.h"
 #include "PlantSensors.h"
+#include <Preferences.h>
+
+Preferences preferences;
 
 const char *ssid = SECRET_SSID;
 const char *pass = SECRET_PASS;
@@ -200,6 +203,9 @@ void handleSetCreds() {
   int space = payload.indexOf(" ");
   username = payload.substring(0, space);
   password = payload.substring(space + 1);
+  preferences.putString("ssid", username.c_str());
+  preferences.putString("pass", password.c_str());
+  preferences.end();
   if ((server.header("Accept").indexOf("html") >= 0) ||
         (server.header("Accept").indexOf("*/*") >= 0)) {
     server.send(200, "text/plain", "true");
@@ -286,6 +292,7 @@ void handleNotFound() {
 void setup(void) {
   int counter = 0;
   Serial.begin(115200);
+  preferences.begin("credentials", false); 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pass);
   Serial.println("");
@@ -342,6 +349,8 @@ void setup(void) {
   //ask server to track these headers
   server.collectHeaders(headerkeys, headerkeyssize);
   server.begin();
+  username = preferences.getString("ssid", "");
+  password = preferences.getString("pass", "");
   delay(2000);
   Serial.println("HTTP server started");
 }
