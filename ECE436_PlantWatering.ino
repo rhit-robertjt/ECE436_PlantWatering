@@ -104,14 +104,16 @@ void handlePlantType() {
   Serial.println("Have Plant Type");
   String payload = server.arg("plain");
   Serial.println(payload);
-  if (payload == "Tropic"){
-    setMinSoilMoisture(40);
+  if (payload == "Succulent"){
+    Serial.println("Is a succulent");
+    setMinSoilMoisture(30);
   }
-  else if (payload == "Arid"){
+  else if (payload == "Cacti"){
+    Serial.println("Is a Cacti");
     setMinSoilMoisture(20);
   }
   else{
-    setMinSoilMoisture(20);
+    setMinSoilMoisture(30);
   }
   if ((server.header("Accept").indexOf("html") >= 0) ||
         (server.header("Accept").indexOf("*/*") >= 0)) {
