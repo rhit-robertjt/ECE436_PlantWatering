@@ -21,20 +21,20 @@ int getWaterLevel() {
   Serial.print("Water Level from Sensor: ");
   Serial.println(waterValue);
   if (waterValue < 1000){
-    Serial.println("you are below 1000");
+    // Serial.println("you are below 1000");
     digitalWrite(LEDPin, HIGH);
     return 0;
   }
   // Goes up to a max of 37% before going to next
   else if (waterValue < 1900){
     double mathValue = 0.04089*waterValue-39.8;
-    Serial.println("you are above 1000");
+    // Serial.println("you are above 1000");
     digitalWrite(LEDPin, LOW);
     return mathValue;
   }
   else {
     double OtherMathValue = 0.834*waterValue - 1693;
-    Serial.println("you are above 1900");
+    // Serial.println("you are above 1900");
     digitalWrite(LEDPin, LOW);
     if (OtherMathValue > 100){
       return 100;
@@ -48,20 +48,20 @@ int getWaterLevel() {
 
 int getSoilMoisture() {
   int soilValue = analogRead(soilPin);
-  Serial.print("Soil Mositure Value: ");
-  Serial.println(soilValue);
+  // Serial.print("Soil Mositure Value: ");
+  // Serial.println(soilValue);
   if (soilValue < 800){
-    Serial.println("Soilvalue below 800");
+    // Serial.println("Soilvalue below 800");
     return 0;
   }
   else if (soilValue < 2400){
-    Serial.println("Soilvalue below 2400");
+    // Serial.println("Soilvalue below 2400");
     double mathValues = 0.043*soilValue - 32.0;
     return mathValues;
   }
   else{
     double otherMathValues = 0.143*soilValue - 278.6;
-    Serial.println("you are above 2400");
+    // Serial.println("you are above 2400");
     if (otherMathValues > 100){
       return 100;
     }

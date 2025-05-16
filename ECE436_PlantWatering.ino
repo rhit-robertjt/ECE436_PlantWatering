@@ -92,6 +92,29 @@ void handleModes() {
   Serial.println("Have Modes");
   String payload = server.arg("plain");
   Serial.println(payload);
+  if (payload == "Manual") {
+    if (getWatererOnTime() > 0) {
+      prevWateringTime = getWatererOnTime();
+    }
+    setWatererOnTime(0);
+    manualMode = true;
+  } else if (payload == "Quiet") {
+    if (getBubblerOnTime() > 0) {
+      prevCircTime = getBubblerOnTime();
+    }
+    setBubblerOnTime(0);
+    manualCircMode = true;
+  } else {
+    // assume Auto
+    if (prevWateringTime > 0) {
+      setWatererOnTime(prevWateringTime);
+    }
+    if (prevCircTime > 0) {
+      setBubblerOnTime(prevCircTime);
+    }
+    manualCircMode = false;
+    manualMode = false;
+  }
   if ((server.header("Accept").indexOf("html") >= 0) ||
         (server.header("Accept").indexOf("*/*") >= 0)) {
     server.send(200, "text/plain", "true");
