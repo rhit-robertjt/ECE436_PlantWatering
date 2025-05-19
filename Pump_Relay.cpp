@@ -35,11 +35,12 @@ void ARDUINO_ISR_ATTR onTimer() {
     bubblerTimerTrigger = 0;
   }
   if (watererTimerTrigger >= watererRelayTimes[watererRelayState]) {
-    if (getSoilMoisture() < minSoilMoisture){
-      digitalWrite(watererRelayPin, false);
-    }
-    else{
+    if (watererRelayState && getSoilMoisture() < minSoilMoisture) {
+      digitalWrite(watererRelayPin, true);
+      // Serial.println("true");
+    } else {
       digitalWrite(watererRelayPin, watererRelayState);
+      // Serial.println(watererRelayState);
     }
     watererRelayState = !watererRelayState;
     watererTimerTrigger = 0;
@@ -77,6 +78,7 @@ void setupRelay(int pin1, int pin2) {
   watererRelayPin = pin2;
   pinMode(bubblerRelayPin, OUTPUT);
   pinMode(watererRelayPin, OUTPUT);
+  pinMode(35, OUTPUT);
 
   // Create semaphore to inform us when the timer has fired
   timerSemaphore = xSemaphoreCreateBinary();
