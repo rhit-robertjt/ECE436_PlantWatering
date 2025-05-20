@@ -38,6 +38,8 @@ void ARDUINO_ISR_ATTR onTimer() {
     if (watererRelayState && getSoilMoisture() < minSoilMoisture) {
       digitalWrite(watererRelayPin, true);
       // Serial.println("true");
+    } else if (getSoilMoisture() < minSoilMoisture) {
+      
     } else {
       digitalWrite(watererRelayPin, watererRelayState);
       // Serial.println(watererRelayState);

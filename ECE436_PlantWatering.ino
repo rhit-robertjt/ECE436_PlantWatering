@@ -257,20 +257,20 @@ void handleVariables() {
   Serial.println("Have Check Creds");
   if ((server.header("Accept").indexOf("html") >= 0) ||
       (server.header("Accept").indexOf("*/*") >= 0)) {
-    char logOutput[40];
-    snprintf(logOutput, 40, "%d seconds, %d seconds, %.2f, %d", 
+    char logOutput[50];
+    snprintf(logOutput, 40, "%d seconds, %d seconds, %.2f, %d, %d", 
       getBubblerTimerTrigger(), 
       (getBubblerRelayState()) ? getBubblerOffTime() - getBubblerTimerTrigger() : 0, 
       returnHumid(), 
-      getSoilMoisture());
+      getSoilMoisture(), getWaterLevel());
     server.send(200, "text/plain", logOutput);
   } else if (server.header("Accept").indexOf("json") >= 0) {
-    char logOutput[100];
-    snprintf(logOutput, 100, "{\"LastWatered\": %d, \"NextWater\": %d, \"Humidity\": %.2f, \"SoilMoisture\": %d}", 
+    char logOutput[120];
+    snprintf(logOutput, 120, "{\"LastWatered\": %d, \"NextWater\": %d, \"Humidity\": %.2f, \"SoilMoisture\": %d, \"WaterLevel\": %d}", 
       getBubblerTimerTrigger(), 
       (getBubblerRelayState()) ? getBubblerOffTime() - getBubblerTimerTrigger() : 0, 
       returnHumid(), 
-      getSoilMoisture());
+      getSoilMoisture(), getWaterLevel());
     server.send(200, "application/json", logOutput);
   }
 }
