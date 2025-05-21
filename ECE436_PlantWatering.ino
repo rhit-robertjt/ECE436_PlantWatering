@@ -325,10 +325,10 @@ void setup(void) {
   pinMode(BTN_STOP_ALARM, INPUT);
 
   setupRelay(19, 20);
-  // setBubblerOnTime(20);         // input in seconds, this is 20  sec
-  // setBubblerOffTime(3*60*60);   // input in seconds, this is 3   hrs
-  // setWatererOnTime(20);         // input in seconds, this is 20  sec
-  // setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
+  setBubblerOnTime(20);         // input in seconds, this is 20  sec
+  setBubblerOffTime(3*60*60);   // input in seconds, this is 3   hrs
+  setWatererOnTime(20);         // input in seconds, this is 20  sec
+  setWatererOffTime(12*60*60);  // input in seconds, this is 12  hrs
   OLED_setup();
   DHT_setup(6);
   setupSensorPins(7,5);
